@@ -110,7 +110,7 @@ namespace TurboTax.TxfConvert.WindowsApp
 
         private void AppendEntryHeader(DateTime BuyDate, DateTime SellDate)
         {
-            TimeSpan days = BuyDate.Subtract(SellDate);
+            TimeSpan days = SellDate.Subtract(BuyDate);
 
             if (days.Days >= 365)
             {
