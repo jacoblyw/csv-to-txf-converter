@@ -74,13 +74,28 @@ namespace TurboTax.TxfConvert.WindowsApp
                             _Body.Append(string.Concat("D", Convert.ToDateTime(csv[3]).ToString("MM/dd/yyyy"), "\n")); //Open Date
                             _Body.Append(string.Concat("D", Convert.ToDateTime(csv[6]).ToString("MM/dd/yyyy"), "\n")); //Close Date
 
+                            bool hasCostNegative = false;
+
+                            if (csv[5].IndexOf('(') > -1)
+                            {
+                                hasCostNegative = true;
+                            }
+
                             string cost = csv[5].Replace(",", "").Replace("(", "").Replace(")", "");
                             if (csv[5].Replace(",", "").Replace("(", "").Replace(")", "").Length > 6)
                             {
                                 cost = cost.Split('.')[0];
                             }
 
-                            _Body.Append(string.Concat("$", cost, "\n")); //Cost Basis
+                            if (!hasCostNegative)
+                            {
+                                _Body.Append(string.Concat("$", cost, "\n")); //Cost Basis
+                            }
+                            else
+                            {
+                                _Body.Append(string.Concat("$-", cost, "\n")); //Cost Basis
+                            }
+
 
                             if (string.IsNullOrEmpty(csv[8]))
                             {
@@ -88,6 +103,14 @@ namespace TurboTax.TxfConvert.WindowsApp
                             }
                             else
                             {
+                                bool hasNegativeProceed = false;
+
+
+                                if (csv[8].IndexOf('(') > -1)
+                                {
+                                    hasNegativeProceed = true;
+                                }
+
                                 string proceed = csv[8].Replace(",", "").Replace("(","").Replace(")","");
 
                                 if (proceed.Length > 6)
@@ -95,7 +118,14 @@ namespace TurboTax.TxfConvert.WindowsApp
                                     proceed = proceed.Split('.')[0];
                                 }
 
-                                _Body.Append(string.Concat("$", proceed)); //Proceed Basis
+                                if (!hasNegativeProceed)
+                                {
+                                    _Body.Append(string.Concat("$", proceed)); //Proceed Basis
+                                }
+                                else
+                                {
+                                    _Body.Append(string.Concat("$-", proceed)); //Proceed Basis
+                                }
                             }
 
                             AppendEnding();
